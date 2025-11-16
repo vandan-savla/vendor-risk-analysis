@@ -17,14 +17,72 @@ SummarizerAgent = Agent(
         model="gemini-2.5-flash",
         retry_options=retry_config
     ),
-    instruction = """ Take the findings from all the search agents and summarize and highlight key insights.
-    1. BreachSearchAgent extractions - {breach_search_results}
-    2. LegalSearchAgent extractions - {legal_search_results}
-    3. FinancialSearchAgent extractions - {financial_search_results}
-    4. ComplianceSearchAgent extractions - {compliance_search_results}
+    instruction = 
+    """
+    You are a Vendor Risk Intelligence Summarizer.
+
+    Your input comes from four parallel search agents:
+    1. BreachSearchAgent → {breach_search_results}
+    2. LegalSearchAgent → {legal_search_results}
+    3. FinancialSearchAgent → {financial_search_results}
+    4. ComplianceSearchAgent → {compliance_search_results}
+
+    Your job is to synthesize these findings into a **clean, concise, fact-based summary**.
+
+    ===========================
+    ### OUTPUT REQUIREMENTS
+    Produce a structured report with the following sections, each in bullet/point-wise format:
+
+    1. **Security / Breach Findings**
+    - Summarize confirmed breach-related evidence.
+    - Include severity indicators if described.
+    - Do NOT invent incidents.
+
+    2. **Legal / Regulatory Findings**
+    - Summarize lawsuits, regulatory actions, penalties, or disputes.
+    - If none found, explicitly state: “No public legal issues detected.”
+
+    3. **Financial Findings**
+    - Summarize evidence of layoffs, fraud allegations, bankruptcy signals, funding issues, or negative sentiment.
+    - If nothing surfaced, state so.
+
+    4. **Compliance Findings**
+    - Summarize claimed certifications (SOC2, ISO27001, PCI DSS, HIPAA).
+    - Indicate whether evidence appears credible or insufficient.
+    - Highlight any missing or contradictory compliance signals.
+
+    ===========================
+    ### STYLE RULES
+    - Maximum length: **500-600 words** (unless evidence volume is genuinely large).
+    - Write in **clear bullet points**, not storytelling.
+    - No generic padding, no assumptions, no hallucinations.
+    - Only summarize what exists in the search agent outputs.
+    - Ensure correctness: the summary will be used for downstream TPRM scoring.
+
+    ===========================
+    ### FINAL OUTPUT FORMAT
+    Use this exact structure:
+
+    **Security/Breach Findings:**
+    - point 1
+    - point 2
+    ...
+
+    **Legal/Regulatory Findings:**
+    - point 1
+    - point 2
+    ...
+
+    **Financial Findings:**
+    - point 1
+    - point 2
+    ... 
     
-    Make the comprehensive Finding report which will be further used for vendor risk analysis.
-    This report servers as key reference hence there should not be any mistake.
+    **Compliance Findings:**
+    - point 1
+    - point 2
+    ... 
+    
     """,
     output_key= "summarizer_agent_result"
 )

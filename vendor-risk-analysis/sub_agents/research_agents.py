@@ -1,14 +1,7 @@
-from google.adk.agents import Agent, SequentialAgent, ParallelAgent, LoopAgent
+from google.adk.agents import Agent, ParallelAgent
 from google.adk.models.google_llm import Gemini
-from google.adk.runners import InMemoryRunner
-from google.adk.tools import AgentTool, FunctionTool, google_search
+from google.adk.tools import google_search
 from google.genai import types
-from google.adk.agents import Agent, SequentialAgent, ParallelAgent, LoopAgent
-from google.adk.models.google_llm import Gemini
-from google.adk.runners import InMemoryRunner
-from google.adk.tools import AgentTool, FunctionTool, google_search
-from google.genai import types
-
 
 retry_config=types.HttpRetryOptions(
     attempts=5,  # Maximum retry attempts
@@ -19,32 +12,45 @@ retry_config=types.HttpRetryOptions(
 
 
 BreachSearchAgent = Agent(
-    name = "BreachSearchAgent",
+    name="BreachSearchAgent",
     model=Gemini(
         model="gemini-2.5-flash",
         retry_options=retry_config
-    ),   
-    instruction=""" 
-    Given vendor_name Research based on the following rules:
-    Are there any frequent data breaches happend which has impacted the organization.
-    Do they resolve and mitigate cyberattacks regularly
-    Do they happen to give employees training regarding cyber attacks?
-    Find comprehensive details about the vendor's cyber posture.
-    
-    Take consideration the following paths
-    
-    News articles
-    Cybersecurity blogs
-    Reddit threads
-    Hacker forums (scrapable indirectly via Google Search)
-    CVE listings for vendor products
-    Government breach notification lists
-    
-    """,
-    tools=[google_search],
-    output_key="breach_search_results",
-)
+    ),
+    instruction="""
+    You are a cybersecurity breach researcher.
 
+    Input available: vendor_name  
+    Your task: Identify ANY public breach-related signals connected to the vendor.
+
+
+    =====================
+    ### WHAT TO SEARCH FOR
+    - Confirmed data breaches
+    - Ransomware incidents
+    - Past hacking incidents
+    - Vulnerability disclosures
+    - Mentions in:
+    - News sites
+    - Cybersecurity blogs
+    - Reddit cybersecurity threads
+    - Hacker forums (via search index only)
+    - CVE listings for vendor products
+    - Government breach disclosure portals
+
+    =====================
+    ### OUTPUT REQUIREMENTS
+    Return a structured summary containing:
+    - Any identified breaches
+    - Severity indicators (low/medium/high)
+    - Dates (if available)
+    - Source URLs
+    - Whether incidents were resolved or ongoing
+
+""",
+    tools=[google_search],
+    output_key="breach_search_results"
+)
 
 
 LegalSearchAgent = Agent(
@@ -53,34 +59,39 @@ LegalSearchAgent = Agent(
         model="gemini-2.5-flash",
         retry_options=retry_config
     ),
-    instruction = """ Based on the given vendor - vendor_name
-    Research based on the following rules:
-    1. If the vendor is currently been facing legal issues.
-    2. Is this vendor been penalized for breaching any major law.
-    3. How many lawsuits has been going on till date.
-    4. Its sister companies also facing same issues ?
-    and many more 
-    
-    Take consideration the following paths
-    
-    News reports
+    instruction="""
+        You are a legal risk researcher.
 
-    Press releases
+        Input available: vendor_name  
+        Your task: Identify ANY public legal or regulatory risks linked to the vendor.
 
-    Public court portals
+        =====================
+        ### WHAT TO SEARCH FOR
+        - Ongoing or past lawsuits
+        - Class-action litigation
+        - Regulatory fines (GDPR, FTC, CCI, SEC, etc.)
+        - Consumer protection violations
+        - Court filings
+        - Legal disputes involving:
+        - parent company
+        - subsidiaries
+        - sister companies (same corporate group)
 
-    Court reporting websites
+        =====================
+        ### OUTPUT REQUIREMENTS
+        Return structured information:
+        - Issue type
+        - Date (if available)
+        - Court / regulator involved
+        - Severity (low/medium/high)
+        - URLs referencing evidence
 
-    Wikipedia entries
-
-    Consumer complaint forums
-    
-    Extract comprehensive details using google_search tool
-    
+        If nothing found - state "No public legal signals detected."
     """,
     tools=[google_search],
     output_key="legal_search_results"
 )
+
 
 FinancialSearchAgent = Agent(
     name="FinancialSearchAgent",
@@ -88,23 +99,42 @@ FinancialSearchAgent = Agent(
         model="gemini-2.5-flash",
         retry_options=retry_config
     ),
-    instruction = """ Based on the given vendor - vendor_name
-    Research based on the following rules:
-    1. What is the financial posture of the vendor ?
-    2. Is there been any financial fraud happend ? 
-    3. Are there frequent layoffs happens by that vendor?
-    4. Does vendor has filed bankruptcy?
-    5. Are any negative reviews by VCs or any funding issues
-    6. Negative customer reviews.
+    instruction="""
+        You are a financial risk analyst.
 
-    Also general findings based on finance,    can use Yahoo finance website for balance sheets, and other financial metrics,
-    forums, for sentiment findings and legal websites for fraud and other findings.
-    
-    Extract comprehensive details using google_search tool
+        Input available: vendor_name  
+        Your task: Identify ANY indicators of financial risk.
+
+        =====================
+        ### WHAT TO SEARCH FOR
+        - Layoffs (trend, frequency)
+        - Bankruptcy filings
+        - Fraud allegations
+        - Revenue decline or instability
+        - Funding issues
+        - VC negative commentary
+        - Poor financial performance indicators
+        - Customer complaints about:
+        - billing practices
+        - sudden service outages (implying cost cuts)
+        - Investor or analyst reports
+
+        =====================
+        ### OUTPUT REQUIREMENTS
+        Return structured summary:
+        - Category (layoffs, fraud, bankruptcy, etc.)
+        - Severity (low/medium/high)
+        - Evidence URLs
+        - Timeframe (recent/past)
+        - Market sentiment if visible
+
+        If no meaningful findings - state "No public financial warning signs found."
     """,
     tools=[google_search],
     output_key="financial_search_results"
 )
+
+
 
 ComplianceSearchAgent = Agent(
     name= "ComplianceSearchAgent",
@@ -113,13 +143,40 @@ ComplianceSearchAgent = Agent(
         retry_options=retry_config
     ),
     instruction=""" 
-    Search if vendor is compliant on various domains 
-    examples SOC2, ISO, PCI DSS, HIPPA, etc
-    whatever the vendor's domain is check for its compliance status. 
-    If it is not compliant raise it as red flag.
-    You need to check privacy policy from its website and trust centers.
-    Generate comphrensive result highlighting important points.
-    """,
+        You are a compliance posture evaluator.
+
+        Input available: vendor_name and website_url
+        Your task: Determine whether the vendor appears compliant with relevant industry standards.
+
+        =====================
+        ### WHAT TO ANALYZE
+        - Does vendor publicly claim certifications?
+        - Are certifications **verifiable**?
+        - Does vendor maintain a trust center?
+        - Does privacy policy mention frameworks?
+        - If a vendor operates in a regulated domain:
+        - Healthcare - HIPAA
+        - Payments/Fintech - PCI DSS
+        - SaaS - SOC2, ISO 27001
+        - EU data handling - GDPR
+        - Look for:
+        - mismatched or fake claims  
+        - expired certificates  
+        - unverifiable claims  
+        - third-party audit references
+
+        =====================
+        ### OUTPUT REQUIREMENTS
+        Return structured summary:
+        - Claimed certifications
+        - Evidence URLs
+        - Whether claims appear credible
+        - Missing certification red flags
+        - Severity of compliance gap (low/medium/high)
+
+        If unclear - state "Insufficient public evidence to confirm compliance."
+    
+     """,
     tools=[google_search],
     output_key="compliance_search_results",
 )
@@ -129,9 +186,3 @@ ParallelResearchTeam = ParallelAgent(
     name="ParallelResearchTeam",
     sub_agents=[BreachSearchAgent,LegalSearchAgent,FinancialSearchAgent, ComplianceSearchAgent],
 )
-
-# ResearchLoopAgent = LoopAgent(
-#     name="ResearchLoopAgent",
-#     sub_agents=[ParallelResearchTeam],
-#     max_iterations = 2,
-# )
