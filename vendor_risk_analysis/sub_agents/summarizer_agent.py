@@ -28,7 +28,7 @@ SummarizerAgent = Agent(
     4. ComplianceSearchAgent -> {compliance_search_results}
 
     Your job is to synthesize these findings into a **clean, concise, fact-based summary**.
-
+    Make sure to cite the sources from wherever necessary.
     ===========================
     ### OUTPUT REQUIREMENTS
     Produce a structured report with the following sections, each in bullet/point-wise format:

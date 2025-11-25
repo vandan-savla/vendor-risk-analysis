@@ -56,6 +56,7 @@ BreachSearchAgent = Agent(
         - short description
         - source_urls (list)
         - status (resolved / ongoing / unclear)
+        - Cite the sources Positive ones as well
 
         If absolutely nothing relevant is found -> return:
         "No breach-related public signals detected."
@@ -109,6 +110,7 @@ LegalSearchAgent = Agent(
         - date (if known)
         - summary
         - source_urls (list)
+        - Cite the sources Positive ones as well
 
         If no findings -> return:
         "No public legal or regulatory issues detected."
@@ -159,6 +161,7 @@ FinancialSearchAgent = Agent(
         - timeframe (recent / historical)
         - short description
         - source_urls (list)
+        - Cite the sources Positive ones as well
 
         If nothing credible found:
         "No public financial warning signs detected."
@@ -171,7 +174,7 @@ FinancialSearchAgent = Agent(
 ComplianceSearchAgent = Agent(
     name= "ComplianceSearchAgent",
     model=Gemini(   
-        model="gemini-2.5-flash",
+        model="gemini-2.5-pro",
         retry_options=retry_config
     ),
     instruction="""
@@ -189,22 +192,21 @@ ComplianceSearchAgent = Agent(
 
         =====================
         ### SEARCH SCOPE
-        Determine if public evidence supports:
-        - SOC 2 (Type I / II)
-        - ISO 27001 or related ISO standards
-        - HIPAA (if business model requires it)
-        - PCI DSS (for payment-related vendors)
-        - GDPR compliance assertions
-        - Published audit reports
-        - Valid trust center entries
-        - External certification directories
-
-        Identify:
-        - verifiable claims
-        - unverifiable or vague claims
-        - outdated or expired certifications
-        - contradictory public information
-
+        
+        Determine if vendor has taken compliance certifications 
+        The certifications information can be found at privacy policy, terms of use, trust centers or security pages of the vendor_name.
+        The result must include the urls of the certificates.
+        
+        The compliance certifications must be relavant to the purpose for which vendor is being onboarded purpose_of_onboarding, the kind of data is processed.
+        For example if the vendor is handling medical information it must be HIPPA compliant. The certification mention can be found publicly on their website_url or trust center.
+        
+        If the certifications mentions are found consider it a success. 
+        
+        The ratings must be given based on the 
+        1. purpose_of_onboarding
+        2. Data vendor is going to process
+        3. Relevant certifications are needed and present.
+            
         =====================
         ### Needed Information as output along with anything that seems necessary.
         Return structured findings:
@@ -213,10 +215,12 @@ ComplianceSearchAgent = Agent(
         - evidence_urls (list)
         - missing_or_red_flags (list)
         - severity_of_gap (low / medium / high)
+        - Cite the sources Positive ones as well
 
         If you cannot verify anything:
         "Insufficient public evidence to confirm vendor compliance posture."
     """,
+    
     tools=[google_search],
     output_key="compliance_search_results",
 )

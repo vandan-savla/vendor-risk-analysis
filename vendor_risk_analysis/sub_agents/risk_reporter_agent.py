@@ -15,7 +15,7 @@ retry_config = types.HttpRetryOptions(
 RiskReporterAgent= Agent(
     name="RiskReporterAgent",
     model=Gemini(
-        model="gemini-2.5-flash",
+        model="gemini-2.5-pro",
         retry_options=retry_config
     ),
     instruction="""
@@ -33,12 +33,13 @@ RiskReporterAgent= Agent(
     Generate a professional vendor risk report with the following sections
     0. Header - `vendor_name Risk Analysis Report`. 
     1. Sub-Heading - Websit URL, Report Date
-    2. Summary and purpose of onboarding and Risk Rating summary. (Simplify)
+    2. Summary and purpose of onboarding and Must have Risk Rating summary. (Simplify)
     3. Sections According to Search Results.
     4. Highlight important figures, key mentions, etc
     5. Detailed Risk rating results along with its reasoning based on Other results
-    6. Sources Section where some important URLs must be given. 
+    6. Sources Section where some Only important URLs and other information must be given. 
     7. Conculsion and end of report.
+    
     
     Make sure to leverage Tables if necessary.
     
