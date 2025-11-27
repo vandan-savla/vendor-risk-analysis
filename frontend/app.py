@@ -77,7 +77,7 @@ if custom_data.strip():
 
 
 criticality = st.selectbox("Criticality", ["low", "medium", "high"])
-certifications = st.multiselect("Certifications", ["SOC 2", "ISO 27001", "GDPR", "HIPAA"])
+certifications = st.multiselect("Certifications", ["SOC 2 Type I", "SOC 2 Type II" , "ISO/IEC 27001", "GDPR", "HIPAA", "PCI DSS", "CCPA", "SOX (Sarbanes-Oxley Act)"])
 
 years = st.number_input("Years in Business", min_value=1)
 employees = st.number_input("Employee Count", min_value=1)
@@ -92,27 +92,67 @@ st.subheader("IRQ (Security Questionnaire)")
 # -------------------------------
 
 irq_master = [
-    ("GEN-01", "General", "Describe the services provided and how customer data will be used."),
-    ("GEN-02", "General", "List all categories of data you expect to process (PII, PHI, PCI, etc.)."),
-    ("SEC-01", "Information Security", "Do you have valid third-party security certifications? Provide scope and audit date."),
-    ("SEC-02", "Information Security", "Do you have a dedicated security team and a formal information security policy?"),
-    ("SEC-03", "Information Security", "Describe your vulnerability management and patching process."),
-    ("ACC-01", "Access Control", "Do you enforce Multi-Factor Authentication (MFA) for internal and administrative access?"),
-    ("ACC-02", "Access Control", "How do you manage provisioning and de-provisioning of employee access?"),
-    ("ACC-03", "Access Control", "Do you support SSO/SAML for customer login?"),
-    ("DAT-01", "Data Protection", "Describe how data is encrypted in transit."),
-    ("DAT-02", "Data Protection", "Describe how data is encrypted at rest."),
-    ("DAT-03", "Data Protection", "What is your customer data retention and deletion policy?"),
-    ("DAT-04", "Data Protection", "Where is customer data geographically stored? Provide regions."),
-    ("TPRM-01", "Third-Party Management", "List your critical sub-processors and their roles."),
-    ("TPRM-02", "Third-Party Management", "Do you perform annual security reviews of your sub-processors?"),
-    ("INC-01", "Incident Response", "Do you have a formal Incident Response Plan (IRP)?"),
-    ("INC-02", "Incident Response", "How quickly do you notify customers after confirming a breach?"),
-    ("BCP-01", "Business Continuity", "Describe your backup strategy and frequency."),
-    ("BCP-02", "Business Continuity", "What are your RTO and RPO objectives?"),
-    ("APP-01", "Application Security", "Do you conduct annual penetration testing? Provide details."),
-    ("APP-02", "Application Security", "Do you use SAST/DAST or CI/CD security scanning tools?")
+    ("GEN-01", "General", 
+     "What services are you expecting this vendor to provide, and how will our organization use those services?"),
+    
+    ("GEN-02", "General", 
+     "What types of data from our side will the vendor need to process or access (e.g., PII, PHI, PCI, logs, analytics data)?"),
+    
+    ("SEC-01", "Information Security", 
+     "Based on your review of the vendor’s website or documentation, what security certifications do they publicly claim (e.g., SOC 2, ISO 27001)?"),
+    
+    ("SEC-02", "Information Security", 
+     "Does the vendor appear to have a dedicated security function or team based on publicly available information?"),
+    
+    ("SEC-03", "Information Security", 
+     "Does the vendor indicate how they handle security updates, vulnerability management, or patching in their platform or documentation?"),
+    
+    ("ACC-01", "Access Control", 
+     "What authentication requirements does the vendor support (e.g., MFA, SSO, SAML)? Based on your understanding, will our users authenticate securely?"),
+    
+    ("ACC-02", "Access Control", 
+     "To your knowledge, how does the vendor handle employee access on their side (provisioning/de-provisioning)? If documented, note it here."),
+    
+    ("ACC-03", "Access Control", 
+     "Will our employees access the vendor via Single Sign-On (SSO)? If yes, what method is supported?"),
+    
+    ("DAT-01", "Data Protection", 
+     "Does the vendor disclose how data is encrypted when transmitted? If yes, describe what is mentioned (e.g., TLS 1.2+)."),
+    
+    ("DAT-02", "Data Protection", 
+     "Does the vendor disclose whether customer data is encrypted at rest? If yes, provide details."),
+    
+    ("DAT-03", "Data Protection", 
+     "What is the vendor’s stated data retention or deletion policy for customer data after contract termination?"),
+    
+    ("DAT-04", "Data Protection", 
+     "Where does the vendor store customer data geographically (US, EU, multi-region) based on their documentation?"),
+    
+    ("TPRM-01", "Third-Party Management", 
+     "List any sub-processors the vendor uses that you are aware of (e.g., AWS, GCP, email providers)."),
+    
+    ("TPRM-02", "Third-Party Management", 
+     "Does the vendor state whether they perform periodic reviews or assessments of their own sub-processors?"),
+    
+    ("INC-01", "Incident Response", 
+     "Does the vendor publicly document an Incident Response Plan or security incident process? If yes, summarize."),
+    
+    ("INC-02", "Incident Response", 
+     "What is the stated vendor notification timeline if an incident affects our data (e.g., 24h, 48h, 72h)?"),
+    
+    ("BCP-01", "Business Continuity", 
+     "Does the vendor disclose their backup frequency or disaster recovery approach on their website or trust center?"),
+    
+    ("BCP-02", "Business Continuity", 
+     "If available, what are the published RTO (Recovery Time Objective) and RPO (Recovery Point Objective) values?"),
+    
+    ("APP-01", "Application Security", 
+     "Does the vendor publish information about conducting penetration testing or running a bug bounty program?"),
+    
+    ("APP-02", "Application Security", 
+     "Does the vendor indicate using security scanning tools (SAST, DAST, SCA) within their development lifecycle?")
 ]
+
 
 irq_list = []
 
@@ -135,154 +175,153 @@ for qid, category, question in irq_master:
 # -------------------------------
 if st.button("Run Analysis"):
     # For testing purpose
-    
-    # vendor_payload = {
-    #     "vendor_details": {
-    #         "vendor_name": "LucidSuite Analytics",
-    #         "website_url": "https://www.lucidsuite.io",
-    #         "service_type": "Cloud SaaS / Workflow Analytics",
-    #         "service_description": "LucidSuite provides a cloud-based platform that helps our internal teams visualize process bottlenecks, track workflow performance, and generate operational insights. The platform runs as a standard SaaS in their managed cloud environment.",
-    #         "data_processed": [
-    #         "PII (employee names & email IDs for login)",
-    #         "Analytics Metadata",
-    #         "Workflow behavioral data",
-    #         "Uploaded CSVs (non-sensitive)"
-    #         ],
-    #         "criticality": "medium",
-    #         "certifications_claimed": [
-    #         "SOC 2 Type II",
-    #         "ISO 27001"
-    #         ],
-    #         "years_in_business": 7,
-    #         "employee_count": 180,
-    #         "region": "US / Canada",
-    #         "self_attested_incidents": "No known outages or security incidents affecting customer data in the last 24 months."
-    #     },
-    #     "purpose_of_onboarding": "We are onboarding LucidSuite Analytics to provide workflow visibility dashboards for our internal Operations and Product teams. The tool will help streamline our process analysis activities and reduce manual reporting efforts. This onboarding is part of our initiative to centralize operational analytics for internal optimization. No customer PII, PHI, or PCI data will be uploaded into the vendor’s environment; only internal employee identifiers and aggregated workflow metadata will be processed.",
-    #     "irq": [
-    #         {
-    #         "id": "GEN-01",
-    #         "category": "General",
-    #         "question": "Describe the services provided and how customer data will be used.",
-    #         "response": "LucidSuite will ingest internal employee identifiers and workflow metadata to generate analytics dashboards. No highly sensitive data is involved. They use our data only for delivering the analytics service."
-    #         },
-    #         {
-    #         "id": "GEN-02",
-    #         "category": "General",
-    #         "question": "List all categories of data you expect to process (PII, PHI, PCI, etc.).",
-    #         "response": "Employee PII (email, name), basic metadata from workflow interactions, and uploaded CSV data containing operational stats. No PHI, PCI, or customer data."
-    #         },
-    #         {
-    #         "id": "SEC-01",
-    #         "category": "Information Security",
-    #         "question": "Do you have valid third-party security certifications? Provide scope and audit date.",
-    #         "response": "Vendor claims SOC 2 Type II and ISO 27001 certifications as of Q2 2024 covering cloud infrastructure, data handling, and operational controls."
-    #         },
-    #         {
-    #         "id": "SEC-02",
-    #         "category": "Information Security",
-    #         "question": "Do you have a dedicated security team and a formal information security policy?",
-    #         "response": "Yes, the vendor has a dedicated security function with a CISO and publishes their information security policy on their trust center."
-    #         },
-    #         {
-    #         "id": "SEC-03",
-    #         "category": "Information Security",
-    #         "question": "Describe your vulnerability management and patching process.",
-    #         "response": "Vendor follows a 30-day SLA for non-critical patches and 48-hour patching for critical CVEs. They use automated scanning tools."
-    #         },
-    #         {
-    #         "id": "ACC-01",
-    #         "category": "Access Control",
-    #         "question": "Do you enforce Multi-Factor Authentication (MFA) for internal and administrative access?",
-    #         "response": "Yes, MFA is mandatory for all internal admin access. SSO available for customers."
-    #         },
-    #         {
-    #         "id": "ACC-02",
-    #         "category": "Access Control",
-    #         "question": "How do you manage provisioning and de-provisioning of employee access?",
-    #         "response": "Access is automated via HR events. De-provisioning is completed within 12 hours of employee exit."
-    #         },
-    #         {
-    #         "id": "ACC-03",
-    #         "category": "Access Control",
-    #         "question": "Do you support SSO/SAML for customer login?",
-    #         "response": "Yes, SSO using Okta and Azure AD."
-    #         },
-    #         {
-    #         "id": "DAT-01",
-    #         "category": "Data Protection",
-    #         "question": "Describe how data is encrypted in transit.",
-    #         "response": "TLS 1.2+ enforced across all endpoints with HSTS."
-    #         },
-    #         {
-    #         "id": "DAT-02",
-    #         "category": "Data Protection",
-    #         "question": "Describe how data is encrypted at rest.",
-    #         "response": "AES-256 at rest on their cloud storage and database systems."
-    #         },
-    #         {
-    #         "id": "DAT-03",
-    #         "category": "Data Protection",
-    #         "question": "What is your customer data retention and deletion policy?",
-    #         "response": "Data is retained for 30 days post-termination unless otherwise required and removed from backups within 90 days."
-    #         },
-    #         {
-    #         "id": "DAT-04",
-    #         "category": "Data Protection",
-    #         "question": "Where is customer data geographically stored?",
-    #         "response": "US-based cloud regions with redundancy across East and Central."
-    #         },
-    #         {
-    #         "id": "TPRM-01",
-    #         "category": "Third-Party Management",
-    #         "question": "List your critical sub-processors and their roles.",
-    #         "response": "AWS for hosting, Snowflake for analytics backend."
-    #         },
-    #         {
-    #         "id": "TPRM-02",
-    #         "category": "Third-Party Management",
-    #         "question": "Do you perform annual security reviews of your sub-processors?",
-    #         "response": "Vendor states they perform annual checks but haven’t provided a detailed list yet."
-    #         },
-    #         {
-    #         "id": "INC-01",
-    #         "category": "Incident Response",
-    #         "question": "Do you have a formal Incident Response Plan (IRP)?",
-    #         "response": "They have an IRP aligned with SOC 2 controls."
-    #         },
-    #         {
-    #         "id": "INC-02",
-    #         "category": "Incident Response",
-    #         "question": "How quickly do you notify customers after confirming a breach?",
-    #         "response": "Vendor claims 48-hour breach notification window."
-    #         },
-    #         {
-    #         "id": "BCP-01",
-    #         "category": "Business Continuity",
-    #         "question": "Describe your backup strategy and frequency.",
-    #         "response": "Daily backups with multi-region replication."
-    #         },
-    #         {
-    #         "id": "BCP-02",
-    #         "category": "Business Continuity",
-    #         "question": "What are your RTO and RPO objectives?",
-    #         "response": "RTO of 12 hours, RPO of 4 hours."
-    #         },
-    #         {
-    #         "id": "APP-01",
-    #         "category": "Application Security",
-    #         "question": "Do you conduct annual penetration testing?",
-    #         "response": "Yes, performed by a third-party vendor yearly."
-    #         },
-    #         {
-    #         "id": "APP-02",
-    #         "category": "Application Security",
-    #         "question": "Do you use SAST/DAST or CI/CD security scanning tools?",
-    #         "response": "They use CI-integrated static and dependency scanners."
-    #         }
-    #     ],
-    #     "report_date": "2025-11-24"
-    #     }
+    vendor_details = {
+    "vendor_details": {
+        "vendor_name": "LucidSuite Analytics",
+        "website_url": "https://www.lucidsuite.io",
+        "service_type": "Cloud SaaS / Workflow Analytics",
+        "service_description": "LucidSuite provides a workflow visualization and operational analytics SaaS used by our internal Operations and Product teams to track process health, identify bottlenecks, and generate performance dashboards.",
+        "data_processed": [
+        "Basic employee PII for login (names, emails)",
+        "Workflow interaction metadata",
+        "Uploaded CSV files with internal process metrics",
+        "Analytics Metadata"
+        ],
+        "criticality": "medium",
+        "certifications_claimed": [
+        "SOC 2 Type II",
+        "ISO 27001"
+        ],
+        "years_in_business": 7,
+        "employee_count": 180,
+        "region": "US / Canada",
+        "self_attested_incidents": "Based on publicly available information, there have been no notable security incidents or outages impacting customer data in the past two years."
+    },
+    "purpose_of_onboarding": "We are onboarding LucidSuite Analytics to support internal workflow optimization efforts. The platform will allow our teams to visualize operational trends and improve reporting efficiency. Only internal employee identifiers and workflow metadata will be processed—no PHI, PCI, or customer PII is uploaded to the vendor environment.",
+    "irq": [
+        {
+        "id": "GEN-01",
+        "category": "General",
+        "question": "What services are you expecting this vendor to provide, and how will our organization use those services?",
+        "response": "LucidSuite will be used to visualize internal process metrics and generate operational dashboards. It supports non-customer-facing analytics and helps internal teams monitor workflow performance."
+        },
+        {
+        "id": "GEN-02",
+        "category": "General",
+        "question": "What types of data from our side will the vendor need to process or access (e.g., PII, PHI, PCI, logs, analytics data)?",
+        "response": "Only basic employee PII for login (name, email), workflow metadata, and optional CSV uploads with operational metrics."
+        },
+        {
+        "id": "SEC-01",
+        "category": "Information Security",
+        "question": "Based on your review of the vendor’s website or documentation, what security certifications do they publicly claim?",
+        "response": "Their trust center lists SOC 2 Type II and ISO 27001, both current as of mid-2024."
+        },
+        {
+        "id": "SEC-02",
+        "category": "Information Security",
+        "question": "Does the vendor appear to have a dedicated security function or team based on publicly available information?",
+        "response": "Yes. They reference a CISO-led security team and publish several security policies on their trust center."
+        },
+        {
+        "id": "SEC-03",
+        "category": "Information Security",
+        "question": "Does the vendor indicate how they handle security updates, vulnerability management, or patching?",
+        "response": "They state that critical patches are applied within 48 hours and general patches within 30 days, supported by automated scanning tools."
+        },
+        {
+        "id": "ACC-01",
+        "category": "Access Control",
+        "question": "What authentication requirements does the vendor support (e.g., MFA, SSO, SAML)?",
+        "response": "MFA is enforced for their internal staff. They support customer SSO using Okta or Azure AD."
+        },
+        {
+        "id": "ACC-02",
+        "category": "Access Control",
+        "question": "To your knowledge, how does the vendor handle employee access on their side (provisioning/de-provisioning)?",
+        "response": "Their documentation indicates automated HR-driven provisioning and same-day de-provisioning for departures."
+        },
+        {
+        "id": "ACC-03",
+        "category": "Access Control",
+        "question": "Will our employees access the vendor via Single Sign-On (SSO)?",
+        "response": "Yes, we plan to integrate via SSO using our Okta tenant."
+        },
+        {
+        "id": "DAT-01",
+        "category": "Data Protection",
+        "question": "Does the vendor disclose how data is encrypted when transmitted?",
+        "response": "TLS 1.2+ with HSTS enabled across endpoints."
+        },
+        {
+        "id": "DAT-02",
+        "category": "Data Protection",
+        "question": "Does the vendor disclose whether customer data is encrypted at rest?",
+        "response": "Yes. All stored data is encrypted with AES-256 according to their security documentation."
+        },
+        {
+        "id": "DAT-03",
+        "category": "Data Protection",
+        "question": "What is the vendor’s stated data retention or deletion policy after contract termination?",
+        "response": "They delete active data within 30 days after account closure and purge backups within 90 days."
+        },
+        {
+        "id": "DAT-04",
+        "category": "Data Protection",
+        "question": "Where does the vendor store customer data geographically?",
+        "response": "They use US-based cloud regions with redundancy across multiple availability zones."
+        },
+        {
+        "id": "TPRM-01",
+        "category": "Third-Party Management",
+        "question": "List any sub-processors the vendor uses that you are aware of.",
+        "response": "AWS for primary hosting and Snowflake for analytics backend, based on their published sub-processor list."
+        },
+        {
+        "id": "TPRM-02",
+        "category": "Third-Party Management",
+        "question": "Does the vendor state whether they perform periodic reviews of their sub-processors?",
+        "response": "They mention performing annual reviews, though the documentation does not provide deep detail."
+        },
+        {
+        "id": "INC-01",
+        "category": "Incident Response",
+        "question": "Does the vendor publicly document an Incident Response Plan or security incident process?",
+        "response": "Yes, the IRP is referenced on their trust center and aligns to SOC 2 requirements."
+        },
+        {
+        "id": "INC-02",
+        "category": "Incident Response",
+        "question": "What is the vendor's stated notification timeline if an incident affects our data?",
+        "response": "Their documentation states a 48-hour customer notification window."
+        },
+        {
+        "id": "BCP-01",
+        "category": "Business Continuity",
+        "question": "Does the vendor disclose their backup strategy?",
+        "response": "Yes, daily backups replicated across multiple regions."
+        },
+        {
+        "id": "BCP-02",
+        "category": "Business Continuity",
+        "question": "What are the published RTO and RPO values?",
+        "response": "RTO is listed as 12 hours; RPO is 4 hours."
+        },
+        {
+        "id": "APP-01",
+        "category": "Application Security",
+        "question": "Does the vendor publish information about conducting penetration testing?",
+        "response": "They state that an external firm performs annual penetration testing."
+        },
+        {
+        "id": "APP-02",
+        "category": "Application Security",
+        "question": "Does the vendor indicate using security scanning tools (SAST, DAST, SCA)?",
+        "response": "Yes, their SDLC documentation mentions static code scanning and dependency scanning."
+        }
+    ],
+    "report_date": "2025-11-24"
+    }
 
 
     vendor_payload = {
