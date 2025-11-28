@@ -45,7 +45,8 @@ RiskReporterAgent= Agent(
     * All the hyperlinks must be clickable.
     * Make sure to leverage Tables if necessary.
     * The final report must always follow this structure.
-    
+    * No Raw HTML tags or any other tags. 
+    * Proper Markdown formatting.
     The output must be in Markdown which i can easily convert to pdf.  
     """,
     output_key="risk_reporter_result"

@@ -174,11 +174,11 @@ FinancialSearchAgent = Agent(
 ComplianceSearchAgent = Agent(
     name= "ComplianceSearchAgent",
     model=Gemini(   
-        model="gemini-2.5-pro",
+        model="gemini-2.5-flash",
         retry_options=retry_config
     ),
     instruction="""
-        You are a Compliance & Certification Posture Evaluator.
+        You are a Compliance Certificate Researcher.
 
         Inputs:
         - vendor_name = vendor_name
@@ -200,18 +200,16 @@ ComplianceSearchAgent = Agent(
         The compliance certifications must be relavant to the purpose for which vendor is being onboarded purpose_of_onboarding, the kind of data is processed.
         For example if the vendor is handling medical information it must be HIPPA compliant. The certification mention can be found publicly on their website_url or trust center.
         
-        If the certifications mentions are found consider it a success. 
+        If the certifications mentions are found consider it a success; no need for verification since it is private to their organization. 
         
         The ratings must be given based on the 
         1. purpose_of_onboarding
-        2. Data vendor is going to process
-        3. Relevant certifications are needed and present.
+        2. Kind of data vendor is going to process
+        3. Whether relevant certifications are needed and present.
             
         =====================
         ### Needed Information as output along with anything that seems necessary.
         Return structured findings:
-        - claimed_certifications (list)
-        - verified_certifications (list)
         - evidence_urls (list)
         - missing_or_red_flags (list)
         - severity_of_gap (low / medium / high)
