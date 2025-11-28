@@ -214,7 +214,7 @@ if st.button("Run Analysis"):
     #     {
     #     "id": "SEC-01",
     #     "category": "Information Security",
-    #     "question": "Based on your review of the vendor’s website or documentation, what security certifications do they publicly claim?",
+    #     "question": "Based on your review of the vendor’s website or documentation, what security certifications do they publicly claim (e.g., SOC 2, ISO 27001)?",
     #     "response": "Their trust center lists SOC 2 Type II and ISO 27001, both current as of mid-2024."
     #     },
     #     {
@@ -226,7 +226,7 @@ if st.button("Run Analysis"):
     #     {
     #     "id": "SEC-03",
     #     "category": "Information Security",
-    #     "question": "Does the vendor indicate how they handle security updates, vulnerability management, or patching?",
+    #     "question": "Does the vendor indicate how they handle security updates, vulnerability management, or patching in their platform or documentation?",
     #     "response": "They state that critical patches are applied within 48 hours and general patches within 30 days, supported by automated scanning tools."
     #     },
     #     {
@@ -262,13 +262,13 @@ if st.button("Run Analysis"):
     #     {
     #     "id": "DAT-03",
     #     "category": "Data Protection",
-    #     "question": "What is the vendor’s stated data retention or deletion policy after contract termination?",
+    #     "question": "What is the vendor’s stated data retention or deletion policy for customer data after contract termination?",
     #     "response": "They delete active data within 30 days after account closure and purge backups within 90 days."
     #     },
     #     {
     #     "id": "DAT-04",
     #     "category": "Data Protection",
-    #     "question": "Where does the vendor store customer data geographically?",
+    #     "question": "Where does the vendor store customer data geographically (US, EU, multi-region) based on their documentation?",
     #     "response": "They use US-based cloud regions with redundancy across multiple availability zones."
     #     },
     #     {
@@ -280,7 +280,7 @@ if st.button("Run Analysis"):
     #     {
     #     "id": "TPRM-02",
     #     "category": "Third-Party Management",
-    #     "question": "Does the vendor state whether they perform periodic reviews of their sub-processors?",
+    #     "question": "Does the vendor state whether they perform periodic reviews or assessments of their own sub-processors?",
     #     "response": "They mention performing annual reviews, though the documentation does not provide deep detail."
     #     },
     #     {
@@ -298,19 +298,19 @@ if st.button("Run Analysis"):
     #     {
     #     "id": "BCP-01",
     #     "category": "Business Continuity",
-    #     "question": "Does the vendor disclose their backup strategy?",
+    #     "question": "Does the vendor disclose their backup frequency or disaster recovery approach on their website or trust center?",
     #     "response": "Yes, daily backups replicated across multiple regions."
     #     },
     #     {
     #     "id": "BCP-02",
     #     "category": "Business Continuity",
-    #     "question": "What are the published RTO and RPO values?",
+    #     "question": "If available, what are the published RTO (Recovery Time Objective) and RPO (Recovery Point Objective) values?",
     #     "response": "RTO is listed as 12 hours; RPO is 4 hours."
     #     },
     #     {
     #     "id": "APP-01",
     #     "category": "Application Security",
-    #     "question": "Does the vendor publish information about conducting penetration testing?",
+    #     "question": "Does the vendor publish information about conducting penetration testing or running a bug bounty program?",
     #     "response": "They state that an external firm performs annual penetration testing."
     #     },
     #     {
