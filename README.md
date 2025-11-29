@@ -142,7 +142,7 @@ streamlit run frontend/app.py
 * Trigger full research pipeline
 * Display final consolidated risk report
 
-**Note:** For test data you can use frontend/test_data.json file. You can copy paste the details, or else replace the vendor_payload variable in app.py with this json.
+> #### **Note:** For test data you can use frontend/test_data.json file. You can copy paste the details, or else replace the vendor_payload variable in app.py with this json.
 ---
 
 # **4. Solution - Autonomous Multi-Agent Risk Review**
