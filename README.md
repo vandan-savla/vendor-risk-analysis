@@ -163,7 +163,7 @@ This transforms a previously manual process into a **consistent, scalable workfl
 # **5. Architecture**
 
 > *(Insert your horizontal architecture diagram here)*
-
+![ArchitectureDiagram](assets/ArchitectureDiagram.drawio.png)
 ```
 RootResearchAgent (Sequential)
  ├── SearchPlannerAgent
