@@ -17,6 +17,7 @@ It transforms a simple vendor onboarding form into:
 
 The system behaves like a coordinated TPRM team-analyzing security, legal, financial, and compliance risk without manual effort.
 
+![video](https://www.youtube.com/watch?v=OzW1vx-dBCY)
 ---
 
 # **2. Problem Statement**
@@ -141,7 +142,7 @@ streamlit run frontend/app.py
 * Trigger full research pipeline
 * Display final consolidated risk report
 
-``` Note: for test data you can use frontend/test_data.json file. You can copy paste the details, or else replace the vendor_payload variable in app.py with this json.```
+> Note: for test data you can use frontend/test_data.json file. You can copy paste the details, or else replace the vendor_payload variable in app.py with this json.
 ---
 
 # **4. Solution - Autonomous Multi-Agent Risk Review**
@@ -162,7 +163,6 @@ This transforms a previously manual process into a **consistent, scalable workfl
 
 # **5. Architecture**
 
-> *(Insert your horizontal architecture diagram here)*
 ![ArchitectureDiagram](assets/ArchitectureDiagram.drawio.png)
 ```
 RootResearchAgent (Sequential)
