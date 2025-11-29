@@ -17,7 +17,7 @@ It transforms a simple vendor onboarding form into:
 
 The system behaves like a coordinated TPRM team-analyzing security, legal, financial, and compliance risk without manual effort.
 
-![video](https://www.youtube.com/watch?v=OzW1vx-dBCY)
+[![Watch the video](https://img.youtube.com/vi/OzW1vx-dBCY/0.jpg)](https://www.youtube.com/watch?v=OzW1vx-dBCY)
 ---
 
 # **2. Problem Statement**
