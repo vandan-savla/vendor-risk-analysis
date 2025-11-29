@@ -174,7 +174,8 @@ for qid, category, question in irq_master:
 # 3. BUILD JSON PAYLOAD FOR ADK
 # -------------------------------
 if st.button("Run Analysis"):
-    # For testing purpose
+    # For testing purpose.
+    
     # vendor_payload = {
     # "vendor_details": {
     #     "vendor_name": "LucidSuite Analytics",

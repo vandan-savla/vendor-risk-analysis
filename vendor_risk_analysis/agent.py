@@ -7,6 +7,7 @@ from .sub_agents.search_planner_agent import SearchPlannerAgent
 from .sub_agents.research_agent_orchestrator import OrchestratorAgent
 from .sub_agents.risk_reporter_agent import RiskReporterAgent
 
+# Sub Agents Map - used for orchestrating the sub agents
 sub_agents_map = {
     "breach": BreachSearchAgent,
     "legal": LegalSearchAgent,
@@ -14,6 +15,7 @@ sub_agents_map = {
     "compliance": ComplianceSearchAgent
 }
 
+# Root Research Agent
 RootResearchAgent = SequentialAgent(
     name="RootResearchAgent",
     sub_agents = [SearchPlannerAgent, OrchestratorAgent , ParallelResearchTeam, SummarizerAgent ,RiskClassificationAgent,RiskReporterAgent],

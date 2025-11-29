@@ -23,8 +23,8 @@ BreachSearchAgent = Agent(
         Inputs:
         - vendor_name = vendor_name
         - website_url = website_url
-        - search_enabled = {search_planner_result.breach_agent}
-        - guided_queries = {search_planner_result.breach_queries}
+        - search_enabled = {orchestrator_agent_result.breach_agent}
+        - guided_queries = {orchestrator_agent_result.breach_queries}
 
         Behavior:
         - If search_enabled is false -> do NOT perform any search. 
@@ -78,8 +78,8 @@ LegalSearchAgent = Agent(
         Inputs:
         - vendor_name = vendor_name
         - website_url = website_url
-        - search_enabled = {search_planner_result.legal_agent}
-        - guided_queries = {search_planner_result.legal_queries}
+        - search_enabled = {orchestrator_agent_result.legal_agent}
+        - guided_queries = {orchestrator_agent_result.legal_queries}
 
         Behavior:
         - If search_enabled is false -> return: "No requirement given for legal search."
@@ -133,8 +133,8 @@ FinancialSearchAgent = Agent(
         Inputs:
         - vendor_name = vendor_name
         - website_url = website_url
-        - search_enabled = {search_planner_result.financial_agent}
-        - guided_queries = {search_planner_result.financial_queries}
+        - search_enabled = {orchestrator_agent_result.financial_agent}
+        - guided_queries = {orchestrator_agent_result.financial_queries}
 
         Behavior:
         - If search_enabled is false -> return: "No requirement given for financial search."
@@ -183,8 +183,8 @@ ComplianceSearchAgent = Agent(
         Inputs:
         - vendor_name = vendor_name
         - website_url = website_url
-        - search_enabled = {search_planner_result.compliance_agent}
-        - guided_queries = {search_planner_result.compliance_queries}
+        - search_enabled = {orchestrator_agent_result.compliance_agent}
+        - guided_queries = {orchestrator_agent_result.compliance_queries}
 
         Behavior:
         - If search_enabled is false -> return: "No requirement given for compliance search."
@@ -223,6 +223,7 @@ ComplianceSearchAgent = Agent(
     output_key="compliance_search_results",
 )
 
+# Parallel Research Team - Invokes all the research agents in parallel, reducing lateny.
 ParallelResearchTeam = ParallelAgent(
     name="ParallelResearchTeam",
     sub_agents=[BreachSearchAgent,LegalSearchAgent,FinancialSearchAgent, ComplianceSearchAgent],
